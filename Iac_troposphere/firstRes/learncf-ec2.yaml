@@ -1,0 +1,19 @@
+Resources:
+  MyQueue:
+    Type: AWS::SQS::Queue
+  ec2LearnCf1a:
+    Properties:
+      ImageId: ami-00dfe2c7ce89a450b
+      InstanceType: t2.micro
+      SubnetId: !ImportValue 'learncf-subnet-netlearnCf1a'
+      Tags:
+        - Key: Comment
+          Value: Learning CloudFormation and Troposphere
+        - Key: Name
+          Value: learncf
+      UserData: !Base64
+        Fn::Join:
+          - "\n"
+          - - 'Queue = '
+            - !Ref 'MyQueue'
+    Type: AWS::EC2::Instance

@@ -1,0 +1,1 @@
+There are different format/eays of developing troposphere IaC,and this is shown in the files contained in this path.

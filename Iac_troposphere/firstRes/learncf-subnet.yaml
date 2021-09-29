@@ -1,0 +1,32 @@
+Outputs:
+  outNetLearnCf1a:
+    Export:
+      Name: !Sub '${AWS::StackName}-netlearnCf1a'
+    Value: !Ref 'netlearnCf1a'
+  outNetLearnCf1b:
+    Export:
+      Name: !Sub '${AWS::StackName}-netlearnCf1b'
+    Value: !Ref 'netlearnCf1b'
+Resources:
+  netlearnCf1a:
+    Properties:
+      AvailabilityZone: us-east-2a
+      CidrBlock: 10.0.1.0/24
+      Tags:
+        - Key: Name
+          Value: learncf-1a
+        - Key: Comment
+          Value: CloudFormation+Troposphere
+      VpcId: vpc-0b5f0305b0120b17d
+    Type: AWS::EC2::Subnet
+  netlearnCf1b:
+    Properties:
+      AvailabilityZone: us-east-2b
+      CidrBlock: 10.0.2.0/24
+      Tags:
+        - Key: Comment
+          Value: CloudFormation+Tropospere
+        - Key: Name
+          Value: learncf-1b
+      VpcId: !GetAtt 'netlearnCf1a.VpcId'
+    Type: AWS::EC2::Subnet

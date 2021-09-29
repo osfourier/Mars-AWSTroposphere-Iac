@@ -1,0 +1,48 @@
+Outputs:
+  EC2PublicIp:
+    Description: PublicIp of the Instance
+    Value: !GetAtt 'fourierInstance.PublicIp'
+  WebUrl:
+    Description: Application Endpoint
+    Value: !Join
+      - ''
+      - - http://
+        - !GetAtt 'fourierInstance.PublicDnsName'
+        - ':'
+        - '443'
+Parameters:
+  KeyPair:
+    ConstraintDescription: key-for-demoEC2
+    Default: key-for-demoEC2
+    Description: key-for-demoEC2
+    Type: AWS::EC2::KeyPair::KeyName
+Resources:
+  SecurityGroup:
+    Properties:
+      GroupDescription: Allow SSH and TCP/ApplicationPort access
+      SecurityGroupIngress:
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '22'
+          IpProtocol: tcp
+          ToPort: '22'
+        - CidrIp: '0.0.0.0/0'
+          FromPort: '443'
+          IpProtocol: tcp
+          ToPort: '443'
+    Type: AWS::EC2::SecurityGroup
+  fourierInstance:
+    Properties:
+      ImageId: ami-00399ec92321828f5
+      InstanceType: t2.micro
+      KeyName: !Ref 'KeyPair'
+      SecurityGroupIds:
+        - !Ref 'SecurityGroup'
+      UserData: !Base64
+        Fn::Join:
+          - "\n"
+          - - '#!/bin/bash'
+            - sudo apt install --enablerepo=epel -y nodejs
+            - wget http://bit.ly/2vEsNuc -O /home/ubuntu/helloworld.js
+            - wget http://bit.ly/2vVvT18 -O /etc/init/helloworld.conf
+            - start helloworld
+    Type: AWS::EC2::Instance
